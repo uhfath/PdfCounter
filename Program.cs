@@ -30,10 +30,14 @@ namespace PdfCounter
 			Parallel.ForEach(files, file =>
 			//foreach (var file in files)
 			{
-				using var reader = new PdfReader(file.Path);
-				using var document = new PdfDocument(reader);
+				var pages = 0;
 
-				var pages = document.GetNumberOfPages();
+				{
+					using var reader = new PdfReader(file.Path);
+					using var document = new PdfDocument(reader);
+					pages = document.GetNumberOfPages();
+				}
+
 				var relative = Path.GetRelativePath(file.Root, file.Path);
 				var destination = Path.Combine(file.Root, GroupedRootFolderName, pages.ToString(), relative);
 
