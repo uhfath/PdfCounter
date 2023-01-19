@@ -38,7 +38,7 @@ namespace PdfCounter
 				var destination = Path.Combine(file.Root, GroupedRootFolderName, pages.ToString(), relative);
 
 				Directory.CreateDirectory(Path.GetDirectoryName(destination));
-				File.Copy(file.Path, destination);
+				File.Move(file.Path, destination);
 			}
 			);
 		}
