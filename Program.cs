@@ -27,27 +27,20 @@ namespace PdfCounter
 
 			Console.WriteLine();
 
-			var filePages = new ConcurrentDictionary<string, int>();
 			Parallel.ForEach(files, file =>
+			//foreach (var file in files)
 			{
 				using var reader = new PdfReader(file.Path);
 				using var document = new PdfDocument(reader);
+
 				var pages = document.GetNumberOfPages();
+				var relative = Path.GetRelativePath(file.Root, file.Path);
+				var destination = Path.Combine(file.Root, GroupedRootFolderName, pages.ToString(), relative);
 
-				filePages.TryAdd(Path.GetRelativePath(file.Root, file.Path), pages);
-			});
-
-			var grouped = filePages
-				.GroupBy(fp => fp.Key)
-				.Select(gr => new
-				{
-					Pages = gr.Key,
-					Files = gr
-						.Select(fp => fp.Value),
-				})
-			;
-
-
+				Directory.CreateDirectory(Path.GetDirectoryName(destination));
+				File.Copy(file.Path, destination);
+			}
+			);
 		}
 	}
 }
